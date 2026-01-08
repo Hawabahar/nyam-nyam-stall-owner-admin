@@ -1,0 +1,206 @@
+Got it 👍
+Below is the **same guide rewritten in SIMPLE, CLEAR, PLAIN TEXT**, easy to read and follow.
+No extra explanations, no guessing.
+
+---
+
+HOW TO CONNECT **PHP → FIREBASE (FIRESTORE)**
+FROM ZERO UNTIL IT WORKS
+
+---
+
+PART 1: GET FIREBASE SERVICE ACCOUNT KEY (JSON)
+
+Step 1: Open Firebase Console
+
+1. Open Firebase Console in your browser
+2. Select your project (example: **nyamnyam**)
+
+Step 2: Go to Project Settings
+
+1. Click the ⚙️ (Settings icon)
+2. Click **Project settings**
+3. Open the **Service accounts** tab
+
+Step 3: Generate the key
+
+1. Click **Generate new private key**
+2. Click **Generate**
+3. A `.json` file will be downloaded automatically
+
+Example filename:
+
+```
+nyamnyam-firebase-adminsdk.json
+```
+
+Step 4: Put the JSON file into your PHP project
+Move the file into a safe folder, for example:
+
+```
+config/firebase_service_account.json
+```
+
+IMPORTANT:
+
+* Do NOT upload this file to GitHub
+* Do NOT share this file
+
+---
+
+PART 2: INSTALL COMPOSER (PHP PACKAGE MANAGER)
+
+Step 1: Check if Composer already exists
+Open Command Prompt or Terminal and run:
+
+```bash
+composer --version
+```
+
+If a version number appears → Composer is installed → go to PART 3
+If not → install Composer
+
+Step 2: Install Composer (Windows)
+
+1. Download from: [https://getcomposer.org/Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe)
+2. Run the installer
+3. When asked, select your `php.exe` (from XAMPP or WAMP)
+4. Finish installation
+5. Restart Command Prompt
+
+Test again:
+
+```bash
+composer --version
+```
+
+---
+
+PART 3: INSTALL FIREBASE PHP SDK
+(This will create composer.json and composer.lock)
+
+Step 1: Open your PHP project folder
+Example:
+
+```bash
+cd C:\xampp\htdocs\nyamnyam
+```
+
+Step 2: Install Firebase SDK using Composer
+
+```bash
+composer require kreait/firebase-php
+```
+
+What this command does automatically:
+
+* Creates `composer.json`
+* Creates `composer.lock`
+* Creates `vendor/` folder
+
+Your project structure will now look like this:
+
+```
+nyamnyam/
+│── vendor/
+│── composer.json
+│── composer.lock
+│── config/
+│   └── firebase_service_account.json
+```
+
+---
+
+PART 4: CREATE FIREBASE CONNECTION FILE (PHP)
+
+Create a new file called:
+
+```
+firebase.php
+```
+
+Put this code inside:
+
+```php
+<?php
+require __DIR__ . '/vendor/autoload.php';
+
+use Kreait\Firebase\Factory;
+
+$factory = (new Factory)
+    ->withServiceAccount(__DIR__ . '/config/firebase_service_account.json');
+
+$firestore = $factory->createFirestore();
+$db = $firestore->database();
+```
+
+This file:
+
+* Loads Firebase SDK
+* Connects PHP to Firestore
+* Creates `$db` for database access
+
+---
+
+PART 5: TEST FIREBASE CONNECTION
+
+Create another file:
+
+```
+test_firebase.php
+```
+
+Put this code inside:
+
+```php
+<?php
+require 'firebase.php';
+
+$collection = $db->collection('stall');
+$documents = $collection->documents();
+
+foreach ($documents as $doc) {
+    echo $doc->id() . "<br>";
+}
+```
+
+Open this URL in browser:
+
+```
+http://localhost/nyamnyam/test_firebase.php
+```
+
+If you see document IDs printed on the screen →
+✅ **PHP IS CONNECTED TO FIREBASE SUCCESSFULLY**
+
+---
+
+COMMON MISTAKES (DO NOT DO THESE)
+
+* Using Realtime Database URL for Firestore
+* Wrong path to service account JSON
+* Forgetting `vendor/autoload.php`
+* Uploading service account JSON to GitHub
+
+---
+
+FINAL CHECKLIST (ALL MUST EXIST)
+
+* Firebase service account JSON file
+* Composer installed
+* `composer.json`
+* `composer.lock`
+* `vendor/` folder
+* `firebase.php` connection file
+
+---
+
+If you want next:
+
+* PHP insert data into Firestore
+* Login + approval check (`updateStatus`)
+* SQL to Firebase migration
+* Fix your stall owner logic
+
+Just tell me what to do next 👍
+
